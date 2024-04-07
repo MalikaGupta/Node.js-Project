@@ -1,0 +1,97 @@
+/* body {
+    padding: 50px;
+    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+    background-color: #dddddd;
+    color: #333333;
+  }
+  
+  a {
+    color: #00B7FF;
+  }
+  
+  header, footer {
+    background-color: #ee0db226;
+    color: rgba(103, 0, 230, 0.831);
+    padding: 1px;
+    text-align: center;
+    width: 100%;
+    position: fixed;
+  }
+  header{
+    top:0;
+  }
+  footer{
+    bottom:0;
+  }
+
+  table, th, td {
+    border: 1px solid #b3a9a9;
+  } */
+
+  body {
+    padding: 20px;
+    font: 16px "Arial", sans-serif;
+    background-color: #E8F7EE;
+    color: #333333;
+  }
+  h1 {
+    color:#87d3a5;
+  }
+  a {
+    color: #00B7FF;
+  }
+  
+  header, footer {
+    background-color: rgba(251, 96, 127, 0.38);
+    color: #b1ebce;
+    padding: 2px;
+    text-align: center;
+    width: 100%;
+    position: fixed;
+    z-index: 1000;
+  }
+  
+  header {
+    top: 0;
+  }
+  
+  footer {
+    bottom: 0;
+  }
+  
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  th, td {
+    border: 1px solid #53917E;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  th {
+    background-color: #FF91A4;
+    color: white;
+  }
+  
+  td {
+    background-color: #FADADD;
+  }
+  
+  form {
+    margin-bottom: 20px;
+  }
+  
+  button {
+    background-color: #FB607F;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #FF91A4;
+  }
+  
