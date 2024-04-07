@@ -65,6 +65,9 @@ database.initialize().then(()=>{
     // Route to add a new restaurant
     app.post('/api/restaurants', async (req, res) => {
         try {
+            if (!req.body.name || !req.body.cuisine || !req.body.borough || !req.body.restaurant_id) {
+                return res.status(400).json({ error: 'Name,restaurant_id, cuisine, and borough are required fields.' });
+            }
             const restaurant = await database.addNewRestaurant(req.body);
             res.status(201).json({message:'Restaurant added successfully!',restaurant});
         } catch (error) {
@@ -91,6 +94,10 @@ database.initialize().then(()=>{
             const {page, perPage, borough } = req.query;
             const restro = await database.getAllRestaurants(page, perPage, borough);
             console.log("Restaurant data retrieved.");
+            if (restro.length === 0) {
+                // No restaurants found for the specified borough
+                return res.status(404).json( { message: 'No restaurants found for the specified borough' });
+            }
             res.status(200).json({ message: 'Successfully retrieved data from database.', data: restro });
         } catch (reason) {
             console.error('Error getting all restaurants:', reason.message);
@@ -106,7 +113,7 @@ database.initialize().then(()=>{
         async (req, res) => {
         const validationErrors = validationResult(req);
         if(!validationErrors.isEmpty()){
-            return res.status(400).json({ message:'Validation failed.',errors: errors.array() });
+            return res.status(400).json({ message:'Validation failed.',errors: validationErrors.array() });
         }
         // use mongoose to get all employees in the database
         try {
