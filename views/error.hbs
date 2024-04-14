@@ -1,2 +1,9 @@
 <h1>Oops! Encountered an error:</h1>
 <p>{{message}}</p>
+{{#if errors}}
+  <ul>
+    {{#each errors}}
+      <li>{{this.path}} : {{this.msg}}</li>
+    {{/each}}
+  </ul>
+{{/if}}

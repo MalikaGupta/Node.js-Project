@@ -1,7 +1,13 @@
-// database.js
+// database.js file - controller
 const url = process.env.DB_CONNECTION_STRING;
 const mongoose = require('mongoose');
 const Restaurant = require("../models/restaurants");
+const User = require('../models/user');
+const bcrypt = require('bcrypt');
+const saltRounds = parseInt(process.env.SALT_ROUNDS);
+
+//JWT
+const jwt = require('jsonwebtoken');
 
 const initialize = async () => {
     try {
@@ -10,6 +16,60 @@ const initialize = async () => {
     } catch (error) {
         console.error('Error connecting to MongoDB:', error.message);
         process.exit(1); // Exit the process if MongoDB connection fails
+    }
+};
+
+const maxAge = 24*60*60;
+const createToken = (id) => {
+    return jwt.sign({ id },'string as my secret key',{
+        expiresIn:maxAge
+    })
+};
+
+const createUser = async ({username,password}) => {
+    try {
+        const hashedPass = await bcrypt.hash(password,saltRounds);
+        const newUser = await User.create({ username, password:hashedPass });
+        return newUser;
+    } catch (error) {
+        console.error('Error creating new user:', error.message);
+        throw error;
+    }
+};
+
+const requireAuth = (req,res,next) => {
+    const token = req.cookies.jwt;
+    //verify the token - is it actually valid?
+    if (token) {
+        jwt.verify(token,'string as my secret key', (error,decodedToken) =>{
+            if(error){
+                console.log(error.message);
+                res.redirect('/login');
+            } else {
+                console.log(decodedToken);
+                next();
+            }
+        })
+    }
+    else {
+        res.redirect('/login');
+    }
+}
+
+const loginUser = async (username,password) => {
+    try {
+        const findUser = await User.findOne({username});
+        if(findUser){
+            const auth = await bcrypt.compare(password, findUser.password);
+            if(auth){
+                return findUser;
+            }
+            throw Error('Incorrect password for this username. Try again.');
+        }
+        throw Error('No user exists with this username!!');
+    } catch (error) {
+        console.error('Error creating new user:', error.message);
+        throw error;
     }
 };
 
@@ -72,5 +132,9 @@ module.exports = {  initialize,
                     getAllRestaurants, 
                     getRestaurantById,
                     updateRestaurantById,
-                    deleteRestaurantById
+                    deleteRestaurantById,
+                    createUser,
+                    createToken, maxAge,
+                    loginUser,
+                    requireAuth,
                  };
