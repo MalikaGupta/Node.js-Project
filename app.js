@@ -36,6 +36,7 @@ database.initialize().then(()=>{
     const hbs = exphbs.create({
         extname: '.hbs'
     });
+    app.engine('.hbs', hbs.engine);
     app.set('view engine', '.hbs');
     //adding a middleware to every route that checks the user logged in or not
     app.get('*', database.checkUser);
