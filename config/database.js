@@ -5,6 +5,7 @@ const Restaurant = require("../models/restaurants");
 const User = require('../models/user');
 const bcrypt = require('bcrypt');
 const saltRounds = parseInt(process.env.SALT_ROUNDS);
+const SECRET_KEY=process.env.SECRET_KEY;
 
 //JWT
 const jwt = require('jsonwebtoken');
@@ -21,7 +22,7 @@ const initialize = async () => {
 
 const maxAge = 24*60*60;
 const createToken = (id) => {
-    return jwt.sign({ id },'string as my secret key',{
+    return jwt.sign({ id },SECRET_KEY,{
         expiresIn:maxAge
     })
 };
@@ -37,11 +38,12 @@ const createUser = async ({username,password}) => {
     }
 };
 
+//check that the token in the cookie is valid
 const requireAuth = (req,res,next) => {
     const token = req.cookies.jwt;
     //verify the token - is it actually valid?
     if (token) {
-        jwt.verify(token,'string as my secret key', (error,decodedToken) =>{
+        jwt.verify(token,SECRET_KEY, (error,decodedToken) =>{
             if(error){
                 console.log(error.message);
                 res.redirect('/login');
@@ -55,6 +57,26 @@ const requireAuth = (req,res,next) => {
         res.redirect('/login');
     }
 }
+
+//Check the current user logged in
+const checkUser = (req, res, next) => {
+    const token = req.cookies.jwt;
+    if (token) {
+        jwt.verify(token, SECRET_KEY, async (err, decodedToken) => {
+        if (err) {
+            res.locals.user = null;
+            next();
+            } else {
+            const currentUser = await User.findById(decodedToken.id).lean();
+            res.locals.user = currentUser;
+            next();
+            }
+        });
+    } else {
+        res.locals.user = null;
+        next();
+    }
+    };
 
 const loginUser = async (username,password) => {
     try {
@@ -137,4 +159,5 @@ module.exports = {  initialize,
                     createToken, maxAge,
                     loginUser,
                     requireAuth,
+                    checkUser,
                  };

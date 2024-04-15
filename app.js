@@ -8,7 +8,8 @@ const database = require("./config/database");
 const port = process.env.PORT;
 //handlebars- forms (wk1-step3)
 const bodyParser = require("body-parser");
-const { engine } = require('express-handlebars');
+const exphbs = require('express-handlebars');
+// const { engine } = require("express-handlebars");
 const { body, param, query, validationResult } = require('express-validator'); //express-validator for checking input params in query for getting all restaurant details based on page, perPage and borough(optional)
 //week2 cookies
 const cookieParser = require('cookie-parser');
@@ -29,10 +30,18 @@ app.use(cookieParser());
 
 database.initialize().then(()=>{
 
-    app.engine('.hbs', engine({
-        extname: '.hbs',
-    }));
+    // app.engine('.hbs', engine({
+    //     extname: '.hbs',
+    // }));
+    const hbs = exphbs.create({
+        extname: '.hbs'
+    });
     app.set('view engine', '.hbs');
+    //adding a middleware to every route that checks the user logged in or not
+    app.get('*', database.checkUser);
+
+    //adding a middleware to every route that checks the user logged in or not
+    app.post('*', database.checkUser);
 
     //route for homepage
     app.get('/', (req, res) => res.render('home'));
@@ -93,7 +102,9 @@ database.initialize().then(()=>{
         const user = await database.loginUser(username, password);
         const token = database.createToken(user._id);
         res.cookie('jwt',token,{httpOnly: true, maxAge:database.maxAge*1000});
-        res.status(200).json({user:user._id})
+        // res.status(200).json({user:user._id});
+        console.log(user._id);
+        res.redirect('/');
         // if(user){
             
         //     // const token = database.createToken(user._id);
@@ -114,12 +125,17 @@ database.initialize().then(()=>{
     }
     }) 
 
+    app.get('/logout',(req,res) => {
+        res.cookie('jwt','',{maxAge : 1})
+        res.redirect('/');
+    })
+
     //Route to render the form for user to enter page, perPage and borough(optional) - UI
     app.get('/api/restoform', (req,res) => {
         res.render('restaurantForm.hbs');
     })
 
-    //display error or restaurant information based on the information provided in the form
+    //Route to display error or restaurant information based on the information provided in the form - UI
     app.post('/api/restoform',database.requireAuth, [
         body('page').isNumeric().withMessage('Page must be a number'),
         body('perPage').isNumeric().withMessage('PerPage must be a number'),
@@ -265,3 +281,4 @@ database.initialize().then(()=>{
     process.exit(1); // Exit the process if initialization fails
 });
 
+module.exports = app;

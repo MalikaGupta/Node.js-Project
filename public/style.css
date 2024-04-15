@@ -1,56 +1,36 @@
-/* body {
-    padding: 50px;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-    background-color: #dddddd;
-    color: #333333;
-  }
-  
-  a {
-    color: #00B7FF;
-  }
-  
-  header, footer {
-    background-color: #ee0db226;
-    color: rgba(103, 0, 230, 0.831);
-    padding: 1px;
-    text-align: center;
-    width: 100%;
-    position: fixed;
-  }
-  header{
-    top:0;
-  }
-  footer{
-    bottom:0;
-  }
-
-  table, th, td {
-    border: 1px solid #b3a9a9;
-  } */
-
   body {
     padding: 20px;
-    font: 16px "Arial", sans-serif;
+    font: 20px "Arial", sans-serif;
     background-color: #E8F7EE;
     color: #333333;
+  }
+  input {
+    padding: 4px;
+    font: 20px "Arial", sans-serif;
   }
   h1 {
     color:#87d3a5;
   }
   a {
-    color: #00B7FF;
+    color: #507971;
   }
   
   header, footer {
     background-color: rgba(251, 96, 127, 0.38);
-    color: #b1ebce;
+    color: #83b49c;
     padding: 2px;
     text-align: center;
     width: 100%;
     position: fixed;
     z-index: 1000;
+    font-size: large;
   }
-  
+  ul{
+    list-style-type: none;
+  }
+  a{
+    text-decoration: none;
+  }
   header {
     top: 0;
   }
@@ -58,7 +38,35 @@
   footer {
     bottom: 0;
   }
-  
+  nav{
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 4px;
+    color: #FB607F;
+  }
+  nav ul{
+    display: flex;
+    align-items: center;
+  }
+  nav li{
+    margin-left: 20px;
+  }
+  nav li a{
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 0.8em;
+    display: block;
+    padding: 10px 1px;
+    letter-spacing: 2px;
+  }
+nav ul li a:hover {
+    background-color: #d9b0b0;
+    color: black;
+}
+.content {
+    padding: 20px;
+}
   table {
     border-collapse: collapse;
     width: 100%;
@@ -89,9 +97,12 @@
     padding: 8px 12px;
     border: none;
     cursor: pointer;
+    font-size: 25px;
   }
   
   button:hover {
     background-color: #FF91A4;
   }
-  
+  h2 {
+    color: #FB607F;
+  }

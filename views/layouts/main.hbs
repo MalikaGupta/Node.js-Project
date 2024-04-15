@@ -7,8 +7,22 @@
   <body>
     <header><p>Malika Gupta--------------------------------------------------------------------------------------N01581424</p>
     </header>
+    <br>
+    <nav>
+        <br><h2 style="text-align: left;">Menu Options:</h2>
+    <ul>
+        {{#if user}}
+        <li>Welcome, {{user.username}}</li>
+        <li><a href="/api/restoform">Get Restaurant Details</a></li>
+        <li><a href="/logout">Log out</a></li>
+        {{else}}
+        <li><a href="/login">Log in</a></li>
+        <li><a href="/signup" class="btn">Sign up</a></li>
+        {{/if}}
+    </ul>
+    </nav>
+
     <div class="content">
-        <br><br>
       {{{body}}}
     </div>
     <footer>
