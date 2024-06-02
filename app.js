@@ -25,10 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 // //adding json middleware, cookies - WEEK2
 app.use(express.json());
 app.use(cookieParser());
-
-
-
-database.initialize().then(()=>{
+    
+database.initialize().then(() => {
 
     // app.engine('.hbs', engine({
     //     extname: '.hbs',
@@ -105,15 +103,7 @@ database.initialize().then(()=>{
         res.cookie('jwt',token,{httpOnly: true, maxAge:database.maxAge*1000});
         // res.status(200).json({user:user._id});
         console.log(user._id);
-        res.redirect('/');
-        // if(user){
-            
-        //     // const token = database.createToken(user._id);
-        //     // res.cookie('jwt',token,{httpOnly: true, maxAge:database.maxAge*1000});
-        //     // res.status(201).json({ user_id: user._id});
-        //     // res.redirect('/');
-        //     // res.status(201).json(user);
-        // }        
+        res.redirect('/');       
     }
     catch(error) {
         console.log(error);
@@ -272,6 +262,37 @@ database.initialize().then(()=>{
         }
     });
 
+    //api for retrieving restaurant's name and address based on cuisine and borough filter
+    app.get('/api/findyourfav', (req,res) => {
+        res.render('findFavForm.hbs');
+    })
+
+    app.post('/api/findyourfav',database.requireAuth, [
+        body('cuisine').isString().withMessage('Please enter a valid value for Cuisine'),
+        body('borough').isString().withMessage('Please enter a valid value for Borough')
+    ],async (req,res)=>{
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).render('error',{message:'Validation error', errors: errors.array()});
+        }
+        // using function in database.js to get all employees in the database based on these params
+        try {
+            const { cuisine, borough } = req.body;
+            
+            const restro = await database.getFavRestaurants(cuisine, borough);
+            if (restro.length === 0) {
+                // No restaurants found for the specified borough
+                return res.status(404).render('error', { message: 'Sorry! No restaurants found for the specified borough and cuisine.' });
+            }
+            console.log("Restaurant data retrieved.");
+            // res.status(200).json({ message: 'Successfully retrieved data from database.', data: restro });
+            console.log(restro);
+            res.status(200).render('favRestaurantDisplay',{cuisine, borough,restaurants: restro});
+        } catch (reason) {
+            console.error('Error getting all restaurants:', reason.message);
+            res.status(500).render('error',{message:'Database error',reason:reason.message});
+        }
+    })
 
     app.listen(port, () => {
         console.log(`${appConfig.name} listening on port: ${port}`);
@@ -282,4 +303,5 @@ database.initialize().then(()=>{
     process.exit(1); // Exit the process if initialization fails
 });
 
-module.exports = app;
+
+// module.exports = main;

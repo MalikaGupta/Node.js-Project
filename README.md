@@ -1,24 +1,67 @@
-# 5315-project
-Project for Web Programming and Framework
-Project Expectations:
-WK 1 - Step 1: Loading the "Restaurant Data" in MongoDB Atlas.
-• Create a new database called “5315-project”. Create a collection called“restaurants”.
-• Using Compass import the provided restaurants.json file into the “restaurants” collection.
-WK 1 - Step 2: Building a Web API (9 marks)
-• You need to install express and mongoose and any other modules you require.
-• Add a “start” entry to the “scripts” section of your package.json. point it to yourmain app file. e.g. “start”: “node app.js”. test using “npm run start”
-• Implement a module to interact with the Restaurant MongoDB collection (Similar toAssignment 4)
-• "Initializing" the Module before the server startso To ensure that we can indeed connect to the MongoDB Atlas cluster with ournew connection string, we must invoke the db.initialize(“connectionstring...”) method and only start the server once it has succeeded, otherwise we should show the error message in the console
-• This module will provide the 6 async functions required by our Web API for this dataset:
-    o db.initialize("Your MongoDB Connection String Goes Here"): 
-    Establish aconnection to the MongoDB server and initialize the "Restaurant" model withthe "restaurant" collection (used above)
-    o db.addNewRestaurant(data): 
-    Create a new restaurant in the collection usingthe object passed in the "data" parametero db.getAllRestaurants(page, perPage, borough): Return an array of allrestaurants for a specific page (sorted by restaurant_id), given the number ofitems per page. For example, if page is 2 and perPage is 5, then this functionwould return a sorted list of restaurants (by restaurant_id), containing items6 – 10. This will help us to deal with the large amount of data in this datasetand make paging easier to implement in the UI later. Additionally, there is anoptional parameter "borough" that can be used to filter results by a specific"borough" valueo db.getRestaurantById(Id): Return a single restaurant object whose "_id"value matches the "Id" parametero updateRestaurantById(data,Id): Overwrite an existing restaurant whose "_id"value matches the "Id" parameter, using the object passed in the "data"parameter.
-    o deleteRestaurantById(Id): Delete an existing restaurant whose "_id" valuematches the "Id" parameter• Add the routes: The next piece that needs to be completed is to define the routes(listed Below). Note: Do not forget to return an error message if there was a problemand make use of the status codes 2xx, 4xx and 500 where applicable.o POST /api/restaurantsThis route uses the body of the request to add a new "Restaurant" documentto the collection and return the created object / fail message to the client.
-    o GET /api/restaurantsThis route must accept the numeric query parameters "page" and "perPage"as well as the string parameter "borough", ie:/api/restaurants?page=1&perPage=5&borough=Bronx. It will use thesevalues to return all "Restaurant" objects for a specific "page" to the clientand optionally filter by "borough", if provided.Add query param validation to your route to make sure that the params youexpect are present, and of the type you expect. Use the “express-validator”module (https://express-validator.github.io/docs/) for this (or another libraryif you want). If the params are incorrect, your route should return a 400 response (client error) vs. 500 (server error).
-    o GET /api/restaurantsThis route must accept a route parameter that represents the _id of thedesired restaurant object, ie: /api/restaurants/5eb3d668b31de5d588f4292e. It will use this parameter to return a specific"Restaurant" object to the client.
-    o PUT /api/restaurantsThis route must accept a route parameter that represents the _id of thedesired restaurant object, ie: /api/restaurants/5eb3d668b31de5d588f4292eas well as read the contents of the request body. It will use these values toupdate a specific "Restaurant" document in the collection and return asuccess / fail message to the client.o DELETE /api/restaurantsThis route must accept a route parameter that represents the _id of thedesired restaurant object, ie: /api/restaurants/5eb3d668b31de5d588f4292e.It will use this value to delete a specific "Restaurant" document from thecollection and return a success / fail message to the client.
-WK 1 - Step 3: Add UI
-• You want to demonstrate your skill in working with Template Engines and Forms,but you don’t want to apply this for the entire application.
-• Add a new route which works like“/api/restaurants?page=1&perPage=5&borough=Bronx”, but takes the ‘page’,‘perPage’ and ‘borough’ from a FORM and displays the output using Handlebarstemplate engine. Use the same route, but with different HTTP methods (GET, POST)to determine if only to render the form or the form and the results. (4 marks)
-• Use your creativity to design the layout and apply proper css style/format. (2 mark)
+# ITE5315 Project
+
+## Project Overview
+
+The ITE5315 Project aims to develop a secure, database-driven Node.js/Express application (REST API) that interacts with a MongoDB database to manage restaurant data. This project is designed to reinforce the concepts learned during the course and provide hands-on experience in building a full-fledged web application with a backend API.
+
+## Project Specification
+
+### Step 0: Initial Setup
+
+- Create a project directory named `5315-project`.
+- Use Git to manage source code by creating a repository on GitHub.
+- Initialize a Git repository locally and push the initial commit to GitHub.
+
+### Step 1: Loading Data into MongoDB Atlas
+
+- Create a new database called `5315-project`.
+- Create a collection named `restaurants`.
+- Import the provided `restaurants.json` file into the `restaurants` collection using MongoDB Compass.
+
+### Step 2: Building a Web API
+
+- Install `express` and `mongoose` along with other required modules.
+- Add a `start` script to `package.json` to run the application.
+- Implement a module to interact with the MongoDB collection, providing the following functions:
+  - `db.initialize(connectionString)`
+  - `db.addNewRestaurant(data)`
+  - `db.getAllRestaurants(page, perPage, borough)`
+  - `db.getRestaurantById(id)`
+  - `db.updateRestaurantById(data, id)`
+  - `db.deleteRestaurantById(id)`
+- Define the following API routes:
+  - `POST /api/restaurants`: Add a new restaurant.
+  - `GET /api/restaurants`: Get all restaurants with pagination and optional borough filtering.
+  - `GET /api/restaurants/:id`: Get a specific restaurant by ID.
+  - `PUT /api/restaurants/:id`: Update a specific restaurant by ID.
+  - `DELETE /api/restaurants/:id`: Delete a specific restaurant by ID.
+
+### Step 3: Adding UI
+
+- Add a route that uses a form to accept parameters (`page`, `perPage`, `borough`) and displays the results using the Handlebars template engine.
+- Design the form and apply CSS styles for a user-friendly interface.
+
+### Step 4: Adding Security Features
+
+- Use environment variables for sensitive information like the MongoDB connection string.
+- Implement password encryption, JWT, and session/cookie mechanisms to secure routes and ensure only authorized users can access specific API endpoints:
+  - `POST /api/restaurants`
+  - `PUT /api/restaurants/:id`
+  - `DELETE /api/restaurants/:id`
+
+### Step 5: Adding New Functionality
+
+- Enhance the application by adding a new feature, such as a new UI component, route, DB operation, or an npm package.
+- An example feature could be a GraphQL implementation of the API.
+
+### Step 6: Publishing to Vercel
+
+- Deploy the application to Vercel using the Vercel CLI or GitHub integration for continuous deployment.
+- Ensure the deployed application runs without errors.
+
+## Project Expectations
+
+- Follow best practices for handling asynchronous tasks and error handling.
+- Use modern JavaScript standards, avoiding the `var` keyword.
+- Structure the Node.js application properly, separating functionality and features logically.
+- Apply the techniques and methodologies learned throughout the course.

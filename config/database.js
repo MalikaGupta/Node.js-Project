@@ -9,7 +9,7 @@ const SECRET_KEY=process.env.SECRET_KEY;
 
 //JWT
 const jwt = require('jsonwebtoken');
-
+//Connect with the database using the db connection string from the .env file
 const initialize = async () => {
     try {
         await mongoose.connect(url);
@@ -19,8 +19,8 @@ const initialize = async () => {
         process.exit(1); // Exit the process if MongoDB connection fails
     }
 };
-
-const maxAge = 24*60*60;
+//set the maxAge jwt tokens and use this in the app.js file to set the age for cookie too
+const maxAge = 24*60*60;//1 day in seconds
 const createToken = (id) => {
     return jwt.sign({ id },SECRET_KEY,{
         expiresIn:maxAge
@@ -78,11 +78,12 @@ const checkUser = (req, res, next) => {
     }
     };
 
+//login the user by checking the username and password
 const loginUser = async (username,password) => {
     try {
-        const findUser = await User.findOne({username});
+        const findUser = await User.findOne({username});//is there a user with this username in db?
         if(findUser){
-            const auth = await bcrypt.compare(password, findUser.password);
+            const auth = await bcrypt.compare(password, findUser.password);//is this the correct password for that username?
             if(auth){
                 return findUser;
             }
@@ -95,6 +96,7 @@ const loginUser = async (username,password) => {
     }
 };
 
+//add a new restaurant based on the data entered
 const addNewRestaurant = async(data)=>{
     try{
         const restaurant = new Restaurant(data);
@@ -106,6 +108,7 @@ const addNewRestaurant = async(data)=>{
     }
 };
 
+//retrieve all restaurant information based on page, perPage and borough from db
 const getAllRestaurants = async (page, perPage, borough)=>{
     try{
         const optionalBorough = borough ? {borough}:{};
@@ -117,6 +120,25 @@ const getAllRestaurants = async (page, perPage, borough)=>{
     }
 };
 
+//Get all the restaurants' details based on suicine and borough filters
+const getFavRestaurants = async (cuisine, borough)=>{
+    try{
+        const query = {};
+        if (cuisine) {
+            query.cuisine = cuisine;
+        }
+        if (borough) {
+            query.borough = borough;
+        }
+        const restro = await Restaurant.find(query).lean();
+        return restro;
+    } catch (error){
+        console.error('Error getting restaurant information based on these paramenetrs. Please see: ',error.message);
+        throw error;
+    }
+};
+
+//get restaurant information based on the restaurant id entered from the db
 const getRestaurantById = async (Id)=>{
     try{
         const restro = await Restaurant.findById(Id);
@@ -159,5 +181,5 @@ module.exports = {  initialize,
                     createToken, maxAge,
                     loginUser,
                     requireAuth,
-                    checkUser,
+                    checkUser,getFavRestaurants,
                  };
