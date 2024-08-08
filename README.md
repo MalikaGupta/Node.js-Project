@@ -1,4 +1,4 @@
-# ITE5315 Project
+# Node.js and MongoDB Project
 
 ## Project Overview
 
